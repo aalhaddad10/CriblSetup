@@ -1,0 +1,36 @@
+vrrp_track_process check_cribl {
+        process cribl
+        weight 10
+}
+vrrp_script check_http {
+        script "/usr/local/bin/http_check.sh"
+        interval 1
+        timeout 5
+        weight 5
+}
+vrrp_instance cribl_worker {
+    state STATE
+    interface IFACE
+    virtual_router_id 92
+    priority 190
+    advert_int 1
+    unicast_src_ip [SELF_IP]
+    unicast_peer {
+            [PEER_IP]
+            }
+
+    authentication {
+        auth_type PASS
+        auth_pass C03ZdLXosOj
+    }
+#   Define the virtual IP address for the internal network interface
+    virtual_ipaddress {
+        [VIP]/24
+    }
+    track_process{
+         check_cribl
+    }
+    track_script {
+         check_http
+      }
+}
