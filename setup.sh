@@ -15,7 +15,7 @@ fi
 # Part 1: Cribl Setup
 echo "========== Cribl Setup =========="
 echo "[*] Cloning CriblSetup repository..."
-git clone <link>
+git clone https://github.com/aalhaddad10/CriblSetup.git
 cd CriblSetup
 
 echo "[*] Setting up Cribl worker..."
