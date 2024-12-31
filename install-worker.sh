@@ -2,9 +2,11 @@
 
 
 ### START CRIBL LEADER TEMPLATE SETTINGS ###
+read -p "Enter Cribl Domain: " DOMAIN
+read -p "Enter Auth Token: " TOKEN
 
-[ -z "${CRIBL_MASTER_HOST}" ]         && CRIBL_MASTER_HOST=""
-[ -z "${CRIBL_AUTH_TOKEN}" ]          && CRIBL_AUTH_TOKEN=''
+[ -z "${CRIBL_MASTER_HOST}" ]         && CRIBL_MASTER_HOST="$DOMAIN"
+[ -z "${CRIBL_AUTH_TOKEN}" ]          && CRIBL_AUTH_TOKEN="$TOKEN"
 [ -z "${CRIBL_MASTER_TLS_DISABLED}" ] && CRIBL_MASTER_TLS_DISABLED="false"
 [ -z "${CRIBL_VERSION}" ]             && CRIBL_VERSION="4.7.3-6f48361f"
 [ -z "${CRIBL_GROUP}" ]               && CRIBL_GROUP="default"
