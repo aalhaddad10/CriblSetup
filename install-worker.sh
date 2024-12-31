@@ -4,7 +4,7 @@
 ### START CRIBL LEADER TEMPLATE SETTINGS ###
 read -p "Enter Cribl Domain: " DOMAIN
 read -p "Enter Auth Token: " TOKEN
-
+echo "[+] Continuing with Cribl Installation..."
 [ -z "${CRIBL_MASTER_HOST}" ]         && CRIBL_MASTER_HOST="$DOMAIN"
 [ -z "${CRIBL_AUTH_TOKEN}" ]          && CRIBL_AUTH_TOKEN="$TOKEN"
 [ -z "${CRIBL_MASTER_TLS_DISABLED}" ] && CRIBL_MASTER_TLS_DISABLED="false"

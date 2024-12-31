@@ -20,7 +20,7 @@ echo "[+] Cloning CriblSetup repository..."
 git clone https://github.com/aalhaddad10/CriblSetup.git 1> /dev/null
 cd CriblSetup
 
-echo "[*] Setting up Cribl worker..."
+echo "[+] Setting up Cribl worker..."
 chmod +x install-worker.sh 1> /dev/null
 ./install-worker.sh 1> /dev/null
 
@@ -38,6 +38,7 @@ else
     echo "[+] Cribl service is enabled ✔"
 fi
 echo "========== Cribl Setup Complete =========="
+echo;
 
 # Part 2: Keepalived Setup
 echo "========== Keepalived Setup =========="
@@ -60,19 +61,7 @@ mv keepalived.conf /etc/keepalived/keepalived.conf
 
 
 
-if ! systemctl is-active --quiet keepalived; then
-    echo "[!] Keepalived is not running. Starting it now..."
-    sudo systemctl start keepalived
-else
-    echo "[+] Keepalived service is running ✔"
-fi
 
-if ! systemctl is-enabled --quiet keepalived; then
-    echo "[!] Keepalived is not enabled. Enabling it now..."
-    sudo systemctl enable keepalived
-else
-    echo "[+] Keepalived service is enabled ✔"
-fi
 
 sed -i "s/\bSTATE\b/$STATE/g" /etc/keepalived/keepalived.conf
 sed -i "s/\bIFACE\b/$IFACE/g" /etc/keepalived/keepalived.conf
@@ -82,6 +71,8 @@ sed -i "s/\bVIP\b/$VIP/g" /etc/keepalived/keepalived.conf
 echo "[+] Keepalived configuration updated ✔"
 
 sudo systemctl restart keepalived
- echo "[+] Keepalived service is restarted ✔"
+echo "[+] Keepalived service is restarted ✔"
 
+ echo "[+] Keepalived service is enabled ✔"
+sudo systemctl enable keepalived
 echo "========== Keepalived Setup Complete =========="
