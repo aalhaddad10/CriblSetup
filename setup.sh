@@ -14,12 +14,12 @@ fi
 
 # Part 1: Cribl Setup
 echo "========== Cribl Setup =========="
-echo "[*] Cloning CriblSetup repository..."
-git clone https://github.com/aalhaddad10/CriblSetup.git
+echo "[+] Cloning CriblSetup repository..."
+git clone https://github.com/aalhaddad10/CriblSetup.git 1> /dev/null
 cd CriblSetup
 
 echo "[*] Setting up Cribl worker..."
-chmod +x install-worker.sh
+chmod +x install-worker.sh 1> /dev/null
 ./install-worker.sh
 
 if ! systemctl is-active --quiet cribl; then
@@ -40,7 +40,7 @@ echo "========== Cribl Setup Complete =========="
 # Part 2: Keepalived Setup
 echo "========== Keepalived Setup =========="
 echo "[*] Installing Keepalived..."
-sudo apt install -y keepalived
+sudo apt install -y keepalived 1> /dev/null
 
 if keepalived --version > /dev/null 2>&1; then
     echo "[+] Keepalived installed successfully."
