@@ -9,6 +9,7 @@ PEER_IP=$4
 if [ "$#" -ne 4 ]; then
     echo "Example: ./setup.sh STATE IFACE SELF_IP PEER_IP"
     echo "Example with actual values: ./setup.sh MASTER ens33 192.168.81.140 192.168.81.141"
+    echo "Example for keepalivd secondary server: ./setup.sh BACKUP ens33 192.168.81.140 192.168.81.141"
     exit 1
 fi
 
