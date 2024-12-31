@@ -7,7 +7,7 @@ SELF_IP=$3
 PEER_IP=$4
 VIP=$5
 
-if [ "$#" -ne 5]; then
+if [ "$#" -ne 5 ]; then
     echo "Example: ./setup.sh STATE IFACE SELF_IP PEER_IP VIP"
     echo "Example with actual values: ./setup.sh MASTER ens33 192.168.81.140 192.168.81.141 192.168.81.142"
     echo "Example for keepalivd secondary server: ./setup.sh BACKUP ens33 192.168.81.141 192.168.81.140 192.168.81.142"
