@@ -75,4 +75,7 @@ echo "[+] Keepalived service is restarted ✔"
 
  echo "[+] Keepalived service is enabled ✔"
 sudo systemctl enable keepalived
+echo
 echo "========== Keepalived Setup Complete =========="
+echo
+echo "[!!!!!] Setup Complete Mr. R!"
