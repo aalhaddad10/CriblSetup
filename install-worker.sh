@@ -4,12 +4,14 @@
 ### START CRIBL LEADER TEMPLATE SETTINGS ###
 read -p "Enter Cribl Domain: " DOMAIN
 read -p "Enter Auth Token: " TOKEN
+read -p "Enter Version: " VERSION
+read -p "Enter Worker Group: " GROUP
 echo "[+] Continuing with Cribl Installation..."
 [ -z "${CRIBL_MASTER_HOST}" ]         && CRIBL_MASTER_HOST="$DOMAIN"
 [ -z "${CRIBL_AUTH_TOKEN}" ]          && CRIBL_AUTH_TOKEN="$TOKEN"
 [ -z "${CRIBL_MASTER_TLS_DISABLED}" ] && CRIBL_MASTER_TLS_DISABLED="false"
-[ -z "${CRIBL_VERSION}" ]             && CRIBL_VERSION="4.7.3-6f48361f"
-[ -z "${CRIBL_GROUP}" ]               && CRIBL_GROUP="default"
+[ -z "${CRIBL_VERSION}" ]             && CRIBL_VERSION="$VERSION"
+[ -z "${CRIBL_GROUP}" ]               && CRIBL_GROUP="$GROUP"
 [ -z "${CRIBL_TAGS}" ]                && CRIBL_TAGS="[]"
 [ -z "${CRIBL_MASTER_PORT}" ]         && CRIBL_MASTER_PORT="4200"
 [ -z "${CRIBL_DOWNLOAD_URL}" ]        && CRIBL_DOWNLOAD_URL=""
