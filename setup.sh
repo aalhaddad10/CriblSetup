@@ -46,11 +46,7 @@ done
 
 # Part 1: Cribl Setup
 if [[ "$INSTALL_CRIBL" == true ]]; then
-    echo "========== Cribl Setup =========="
-    echo "[+] Cloning CriblSetup repository..."
-    git clone https://github.com/aalhaddad10/CriblSetup.git 1> /dev/null
-    cd CriblSetup
-
+    echo -e "========== Cribl Setup ==========\n"
     echo "[+] Setting up Cribl worker..."
     ./install-worker.sh 1> /dev/null
 
