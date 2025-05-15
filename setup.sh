@@ -60,7 +60,7 @@ if [[ "$INSTALL_CRIBL" == true ]]; then
     
     echo "[+] Setting up Cribl worker..."
     chmod +x install-worker.sh
-    ./install-worker.sh 1> /dev/null
+    ./install-worker.sh "$(curl -s https://cdn.cribl.io/dl/latest-x64 | xargs basename | sed -e 's/^cribl-//' -e 's/-linux.*$//')" 1> /dev/null
 
     if ! systemctl is-active --quiet cribl; then
         echo "[!] Cribl service is not running. Starting it now..."
