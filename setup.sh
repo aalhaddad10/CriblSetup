@@ -1,5 +1,9 @@
 #!/bin/bash
-
+if [ "$EUID" -ne 0 ]; 
+then
+  echo "Please run as root (sudo)."
+  exit 1
+fi
 # Initialize variables
 INSTALL_CRIBL=false
 INSTALL_KEEPALIVED=false
@@ -28,6 +32,9 @@ usage() {
     exit 1
 }
 
+# if no option was provided, print menu and exit
+[ "$#" -eq 0 ] && usage && exit 1
+
 # Parse arguments
 while [[ "$#" -gt 0 ]]; do
     case "$1" in
@@ -48,8 +55,11 @@ done
 if [[ "$INSTALL_CRIBL" == true ]]; then
     echo -e "========== Cribl Setup ==========\n"
     echo "[+] Downloading up Cribl Binary (Zipped)..."
-    curl -Lso - $(curl https://cdn.cribl.io/dl/latest-x64) -O cribl.tar.gz
+    wget $(curl https://cdn.cribl.io/dl/latest-x64) -O cribl.tar.gz
+    [ -f cribl.tar.gz ] && echo "[+] Cribl binary was downloaded successfully, proceeding..." || (echo "[!] Cribl binary download failed. Exiting" && exit 1)
+    
     echo "[+] Setting up Cribl worker..."
+    chmod +x install-worker.sh
     ./install-worker.sh 1> /dev/null
 
     if ! systemctl is-active --quiet cribl; then
