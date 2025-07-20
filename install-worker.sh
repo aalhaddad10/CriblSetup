@@ -5,16 +5,20 @@
 read -p "Enter Cribl Domain: " DOMAIN
 read -p "Enter Auth Token: " TOKEN
 read -p "Enter Worker Group: " GROUP
+read -p "Is TLS Disabled? (true | false): " TLS
 echo "[+] Continuing with Cribl Installation..."
+
+### START CRIBL LEADER TEMPLATE SETTINGS ###
+
 [ -z "${CRIBL_MASTER_HOST}" ]         && CRIBL_MASTER_HOST="$DOMAIN"
 [ -z "${CRIBL_AUTH_TOKEN}" ]          && CRIBL_AUTH_TOKEN="$TOKEN"
-[ -z "${CRIBL_MASTER_TLS_DISABLED}" ] && CRIBL_MASTER_TLS_DISABLED="false"
-[ -z "${CRIBL_VERSION}" ]             && CRIBL_VERSION="$1"
+[ -z "${CRIBL_MASTER_TLS_DISABLED}" ] && CRIBL_MASTER_TLS_DISABLED="$TLS"
+[ -z "${CRIBL_VERSION}" ]             && CRIBL_VERSION="4.12.2-4b17c8d4"
 [ -z "${CRIBL_GROUP}" ]               && CRIBL_GROUP="$GROUP"
 [ -z "${CRIBL_TAGS}" ]                && CRIBL_TAGS="[]"
 [ -z "${CRIBL_MASTER_PORT}" ]         && CRIBL_MASTER_PORT="4200"
 [ -z "${CRIBL_DOWNLOAD_URL}" ]        && CRIBL_DOWNLOAD_URL=""
-[ -z "${CRIBL_WORKER_MODE}" ]         && CRIBL_WORKER_MODE="worker"
+[ -z "${CRIBL_WORKER_MODE}" ]         && CRIBL_WORKER_MODE="managed-edge"
 [ -z "${CRIBL_USER}" ]                && CRIBL_USER="cribl"
 [ -z "${CRIBL_USER_GROUP}" ]          && CRIBL_USER_GROUP="cribl"
 [ -z "${CRIBL_INSTALL_DIR}" ]         && CRIBL_INSTALL_DIR="/opt/cribl"
@@ -45,7 +49,7 @@ if [ -z "${CRIBL_DOWNLOAD_URL}" ]; then
     FILE="cribl-${CRIBL_VERSION}-linux-:ARCH:.tgz"
     CRIBL_DOWNLOAD_URL="https://cdn.cribl.io/dl/$(echo ${CRIBL_VERSION} | cut -d '-' -f 1)/${FILE}"
 fi
-case `uname -i` in
+case `uname -m` in
     aarch64) ARCH=arm64;;
     *) ARCH=x64;;
 esac
@@ -140,11 +144,16 @@ else
   echo "$CRIBL_USER_GROUP_ID"
 fi
 
+
+PKG=./cribl.tar.gz
+
 echo "Downloading and Installing Cribl ..."
 mkdir -p ${CRIBL_INSTALL_DIR}
-#curl -Lso ./cribl.tar.gz "${CRIBL_DOWNLOAD_URL}"
-tar xzf ./cribl.tar.gz -C ${CRIBL_INSTALL_DIR} --strip-components=1
-rm -f ./cribl.tar.gz
+
+#curlpkg && checkpkg || { echo "error: aborting installation" >&2; exit 1; }
+
+tar xzf "${PKG}" -C "${CRIBL_INSTALL_DIR}" --strip-components=1
+rm -f "${PKG}" "${PKG}.md5"
 
 echo "Configuring Cribl"
 mkdir -p ${CRIBL_INSTALL_DIR}/local/_system
