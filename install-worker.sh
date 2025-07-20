@@ -8,17 +8,15 @@ read -p "Enter Worker Group: " GROUP
 read -p "Is TLS Disabled? (true | false): " TLS
 echo "[+] Continuing with Cribl Installation..."
 
-### START CRIBL LEADER TEMPLATE SETTINGS ###
-
 [ -z "${CRIBL_MASTER_HOST}" ]         && CRIBL_MASTER_HOST="$DOMAIN"
 [ -z "${CRIBL_AUTH_TOKEN}" ]          && CRIBL_AUTH_TOKEN="$TOKEN"
 [ -z "${CRIBL_MASTER_TLS_DISABLED}" ] && CRIBL_MASTER_TLS_DISABLED="$TLS"
-[ -z "${CRIBL_VERSION}" ]             && CRIBL_VERSION="4.12.2-4b17c8d4"
+[ -z "${CRIBL_VERSION}" ]             && CRIBL_VERSION="$1"
 [ -z "${CRIBL_GROUP}" ]               && CRIBL_GROUP="$GROUP"
 [ -z "${CRIBL_TAGS}" ]                && CRIBL_TAGS="[]"
 [ -z "${CRIBL_MASTER_PORT}" ]         && CRIBL_MASTER_PORT="4200"
 [ -z "${CRIBL_DOWNLOAD_URL}" ]        && CRIBL_DOWNLOAD_URL=""
-[ -z "${CRIBL_WORKER_MODE}" ]         && CRIBL_WORKER_MODE="managed-edge"
+[ -z "${CRIBL_WORKER_MODE}" ]         && CRIBL_WORKER_MODE="worker"
 [ -z "${CRIBL_USER}" ]                && CRIBL_USER="cribl"
 [ -z "${CRIBL_USER_GROUP}" ]          && CRIBL_USER_GROUP="cribl"
 [ -z "${CRIBL_INSTALL_DIR}" ]         && CRIBL_INSTALL_DIR="/opt/cribl"
@@ -144,14 +142,46 @@ else
   echo "$CRIBL_USER_GROUP_ID"
 fi
 
-
+curldownload() {
+  local url=$1
+  local output=$2
+  local status
+  status=$(curl -Lso "${output}" --write-out "%{http_code} %{scheme}" "${url}")
+  local curl_exit_code=$?
+  local http_code=$(cut -d " " -f1 <<< $status)
+  local scheme=$(cut -d " " -f2 <<< $status)
+  if [[ $scheme = "HTTP" || $scheme = "HTTPS" || $scheme = "FTP" || $scheme = "FTPS" ]] ; then
+    if [[ $http_code -lt 200 || $http_code -gt 299 ]] ; then
+      echo "error: invalid HTTP status downloading package; url=${url} status=${http_code}" >&2
+      return 1
+    fi
+  fi
+  if [[ $curl_exit_code -ne 0 ]] ; then
+    echo "error: curl exited with non-zero code; url=${url} code=${curl_exit_code} status=${status}" >&2
+    return 1
+  fi
+  return 0
+}
 PKG=./cribl.tar.gz
+curlpkg() {
+  curldownload "${CRIBL_DOWNLOAD_URL}" "${PKG}" && curldownload "${CRIBL_DOWNLOAD_URL}.md5" "${PKG}.md5" || return 1;
+  return 0
+}
+checkpkg() {
+  if checkrun md5sum; then
+    if [[ "$(md5sum "${PKG}" | awk '{print $1}')" != "$(awk '{print $1}' "${PKG}.md5")" ]]; then
+      echo "error: checksum validation failed; package=${PKG}" >&2
+      return 1 # fail
+    fi
+  else
+    echo "warning: unable to validate package; missing md5sum" >&2
+  fi
+  return 0 # success
+}
 
 echo "Downloading and Installing Cribl ..."
 mkdir -p ${CRIBL_INSTALL_DIR}
-
-#curlpkg && checkpkg || { echo "error: aborting installation" >&2; exit 1; }
-
+curlpkg && checkpkg || { echo "error: aborting installation" >&2; exit 1; }
 tar xzf "${PKG}" -C "${CRIBL_INSTALL_DIR}" --strip-components=1
 rm -f "${PKG}" "${PKG}.md5"
 
