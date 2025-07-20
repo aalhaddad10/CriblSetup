@@ -54,10 +54,6 @@ done
 # Part 1: Cribl Setup
 if [[ "$INSTALL_CRIBL" == true ]]; then
     echo -e "========== Cribl Setup ==========\n"
-    echo "[+] Downloading up Cribl Binary (Zipped)..."
-    wget $(curl https://cdn.cribl.io/dl/latest-x64) -O cribl.tar.gz
-    [ -f cribl.tar.gz ] && echo "[+] Cribl binary was downloaded successfully, proceeding..." || (echo "[!] Cribl binary download failed. Exiting" && exit 1)
-    
     echo "[+] Setting up Cribl worker..."
     chmod +x install-worker.sh
     ./install-worker.sh "$(curl -s https://cdn.cribl.io/dl/latest-x64 | xargs basename | sed -e 's/^cribl-//' -e 's/-linux.*$//')" 1> /dev/null
