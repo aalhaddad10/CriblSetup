@@ -181,7 +181,12 @@ checkpkg() {
 
 echo "Downloading and Installing Cribl ..."
 mkdir -p ${CRIBL_INSTALL_DIR}
-curlpkg && checkpkg || { echo "error: aborting installation" >&2; exit 1; }
+if [ ! -f $PKG ]
+then
+  echo "Downlaoding Cribl From Cribl-CDN"
+  curlpkg && checkpkg || { echo "error: aborting installation" >&2; exit 1; }
+fi
+
 tar xzf "${PKG}" -C "${CRIBL_INSTALL_DIR}" --strip-components=1
 rm -f "${PKG}" "${PKG}.md5"
 
